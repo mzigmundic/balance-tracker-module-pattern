@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="style.css">
+    <title>Balance Tracker</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <header id="main-header">
+        <div class="container my-5">
+            <div class="row mb-4">
+                <div class="col-md-8 offset-md-2 text-center">
+                    <div class="card bg-dark text-light mb-3">
+                        <div class="card-header h2">Available Budget</div>
+                        <div class="card-body h2" id="budget-value"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 offset-md-2 text-center">
+                    <div class="card bg-success text-white mb-3">
+                        <div class="card-header h4">Income</div>
+                        <div class="card-body h4">
+                            <div id="budget-income-value"></div>
+                            <div id="budget-income-percentage"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card bg-danger text-white mb-3">
+                        <div class="card-header h4">Expenses</div>
+                        <div class="card-body h4">
+                            <span id="budget-expenses-value"></span><span id="budget-expenses-percentage" class="ml-3"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="add-section" class="mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form>
+                        <div class="form-group">
+                            <select class="form-control" id="add-type">
+                                <option value="inc" selected>Income</option>
+                                <option value="exp">Expense</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="add-description" placeholder="Add Description"
+                                autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="add-value" placeholder="Value">
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-block" id="add-btn">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="list-section" class="my-5">
+        <div class="container">
+            <div class="row text-center mt-5">
+                <div class="col-md-6 pb-3">
+                    <table class="table table-striped">
+                        <thead class="bg-success">
+                            <tr>
+                                <th colspan="3" class="text-white">Income</th>
+                            </tr>
+                        </thead>
+                        <tbody id="income-list">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-6 pb-3">
+                    <table class="table table-striped">
+                        <thead class="bg-danger">
+                            <tr>
+                                <th colspan="3" class="text-white">Expenses</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-list">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="main-footer" class="bg-dark text-light mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center py-4">
+                    <h3>Balance Tracker</h3>
+                    <p>Copyright &copy; Mladen</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
