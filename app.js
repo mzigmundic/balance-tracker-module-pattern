@@ -68,6 +68,22 @@ const BudgetController = (function() {
             return newItem;
         },
 
+        // Delete Item Function
+        deleteItem: function(type, id) {
+            let ids, index
+
+            ids = data.allItems[type].map(function(item) {
+                return item.id;
+            });
+
+            index = ids.indexOf(id);
+
+            if (index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
+
+        },
+
         // Calculate Budget Function
         calculateBudget: function() {
 
@@ -109,8 +125,8 @@ const BudgetController = (function() {
 
 const UIController = (function() {
 
-    // Private DOM Strings Object
-    const DOMStrings = {
+    // Private DOM Selectors Object
+    const DOMSelectors = {
         inputType: '#add-type',
         inputDescription: '#add-description',
         inputValue: '#add-value',
@@ -121,7 +137,8 @@ const UIController = (function() {
         incomeLabel: '#budget-income-value',
         expensesLabel: '#budget-expenses-value',
         percentageLabel: '#budget-expenses-percentage',
-    }
+        listSection: '#list-section'
+    };
 
     // Public Functions
     return {
@@ -129,9 +146,9 @@ const UIController = (function() {
         // Get Input Function
         getInput: function() {
             return {
-                type: document.querySelector(DOMStrings.inputType).value, // Will be either inc or exp
-                description: document.querySelector(DOMStrings.inputDescription).value,
-                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
+                type: document.querySelector(DOMSelectors.inputType).value, // Will be either inc or exp
+                description: document.querySelector(DOMSelectors.inputDescription).value,
+                value: parseFloat(document.querySelector(DOMSelectors.inputValue).value)
             };
         },
 
@@ -140,14 +157,14 @@ const UIController = (function() {
             let html, element;
 
             if (type === 'inc') {
-                element = DOMStrings.incomeContainer;
+                element = DOMSelectors.incomeContainer;
                 html = `<tr id="inc-${obj.id}">
                             <td class="text-left">${obj.description}</td>
                             <td>${obj.value}</td>
                             <td class="text-right"><button class="btn btn-dark remove-item-btn">&times;</button></td>
                         </tr>`;
             } else if (type === 'exp') {
-                element = DOMStrings.expensesContainer;
+                element = DOMSelectors.expensesContainer;
                 html = `<tr id="exp-${obj.id}">
                             <td class="text-left">${obj.description}</td>
                             <td>${obj.value}<span id="item-percentage" class="bg-danger p-1 rounded text-white ml-3">${obj.percentage}</span></td>
@@ -159,29 +176,35 @@ const UIController = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeend', html);
         },
 
+        // Delete List Item function
+        deleteListItem: function(selectorID) {
+            const element = document.getElementById(selectorID);
+            element.parentNode.removeChild(element);
+        },
+
         // Clear Input Fields Function
         clearFields: function() {
-            document.querySelector(DOMStrings.inputDescription).value = "";
-            document.querySelector(DOMStrings.inputValue).value = "";
-            document.querySelector(DOMStrings.inputDescription).focus();
+            document.querySelector(DOMSelectors.inputDescription).value = "";
+            document.querySelector(DOMSelectors.inputValue).value = "";
+            document.querySelector(DOMSelectors.inputDescription).focus();
         },
 
         // Display Budget Function
         displayBudget: function(obj) {
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            document.querySelector(DOMSelectors.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMSelectors.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMSelectors.expensesLabel).textContent = obj.totalExp;
 
             if (obj.percentage > 0) {
-                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
+                document.querySelector(DOMSelectors.percentageLabel).textContent = obj.percentage + '%';
             } else {
-                document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+                document.querySelector(DOMSelectors.percentageLabel).textContent = '---';
             }
         },
 
-        // DOM Strings Object Getter Function
-        getDOMStrings: function() {
-            return DOMStrings;
+        // DOM Selectors Object Getter Function
+        getDOMSelectors: function() {
+            return DOMSelectors;
         }
     };
 })();
@@ -197,13 +220,17 @@ const App = (function(BudgetController, UIController) {
 
     // Private Setup Event Listeners Function
     const setupEventListeners = function() {
-        const DOM = UIController.getDOMStrings();
+        const DOM = UIController.getDOMSelectors();
+        
         document.querySelector(DOM.inputBtn).addEventListener('click', addItemCtrl);
+
         document.addEventListener('keypress', function(event) {
             if (event.keyCode === 13) {
                 addItemCtrl();
             }
         });
+
+        document.querySelector(DOM.listSection).addEventListener('click', deleteItemCtrl);
     };
 
     // Private Update Budget Function
@@ -236,6 +263,30 @@ const App = (function(BudgetController, UIController) {
             UIController.clearFields();
 
             // calculate and update budget
+            updateBudget();
+        }
+    };
+
+    // Private Delete Item Function
+    const deleteItemCtrl = function(event) {
+        let itemID, splitID, type, ID;
+
+        itemID = event.target.parentNode.parentNode.id;
+
+        if (itemID) {
+
+            // inc-1
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = parseInt(splitID[1]);
+
+            // delete the data from the data structure
+            BudgetController.deleteItem(type, ID);
+
+            // delete item from the UI
+            UIController.deleteListItem(itemID);
+
+            // update and show the new budget
             updateBudget();
         }
     };
